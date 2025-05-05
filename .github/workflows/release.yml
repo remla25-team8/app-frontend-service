@@ -26,7 +26,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.PAT_GITHUB_TOKEN }}
+          password: ${{ secrets.GITHUB_TOKEN }}
     
       - name: Convert repository owner to lowercase
         id: lowercase
@@ -39,17 +39,17 @@ jobs:
           context: .
           push: true
           tags: |
-            ghcr.io/${{ steps.lowercase.outputs.owner }}/app:latest
-            ghcr.io/${{ steps.lowercase.outputs.owner }}/app:${{ steps.version.outputs.version }}
+            ghcr.io/${{ steps.lowercase.outputs.owner }}/app-frontend-service:latest
+            ghcr.io/${{ steps.lowercase.outputs.owner }}/app-frontend-service:${{ steps.version.outputs.version }}
           build-args: |
-            APP_VERSION=${{ steps.version.outputs.version }}
+            app-frontend-service_VERSION=${{ steps.version.outputs.version }}
             build-args: |
             VERSION=${{ github.ref_name }}
     
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          token: ${{ secrets.PAT_GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           draft: false
           prerelease: ${{ contains(github.ref_name, '-pre') }}
         #   prerelease: true
@@ -57,11 +57,11 @@ jobs:
           body: |
             ## Docker Images
 
-            - `ghcr.io/${{ steps.lowercase.outputs.owner }}/app:${{ steps.version.outputs.version }}`
-            - `ghcr.io/${{ steps.lowercase.outputs.owner }}/app:latest`
+            - `ghcr.io/${{ steps.lowercase.outputs.owner }}/app-frontend-service:${{ steps.version.outputs.version }}`
+            - `ghcr.io/${{ steps.lowercase.outputs.owner }}/app-frontend-service:latest`
 
             ## Usage
 
             ```bash
-            docker pull ghcr.io/${{ steps.lowercase.outputs.owner }}/app:${{ steps.version.outputs.version }}
+            docker pull ghcr.io/${{ steps.lowercase.outputs.owner }}/app-frontend-service:${{ steps.version.outputs.version }}
             ```
